@@ -1,0 +1,441 @@
+
+Curso de FastAPI - Configuração do ambiente 
+e hello world com testes | Aula 01
+
+https://www.youtube.com/watch?v=-Pi5AmOfL2s
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> iniciando o projeto de forma padrão com o poetry
+poetry new fast_zero
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Comando CLI para mortrar arvore de diretorios
+tree
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Setando versao do paython
+Para que a versão do python que instalamos via pyenv seja usada em nosso projeto 
+criado com poetry, devemos dizer ao pyenv qual versão do python será usada nesse diretório:
+$ pyenv local 3.12.3 
+
+Esse comando criará um arquivo oculto chamado .python-version na raiz do nosso projeto:
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Em conjunto com essa instrução, devemos dizer ao poetry que usaremos exatamente a versão 3.12 
+em nosso projeto. Para isso alteraremos o arquivo de configuração do projeto o pyproject.toml na raiz do projeto:
+[tool.poetry.dependencies]
+python = "3.12.*"
+
+Desta forma, temos uma versão do python selecionada para esse projeto e uma garantia que o poetry 
+usará essa versão para a criação do nosso ambiente virtual.
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Em seguida, inicializaremos nosso ambiente virtual com Poetry e instalaremos o FastAPI:
+poetry shell 
+(. /home/dignux/.cache/pypoetry/virtualenvs/fast-zero-muHSyM8s-py3.12/bin/activate)
+poetry install 
+poetry add fastapi
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Primeira Execução de um "Hello, World!"
+Uma coisa bastante interessante sobre o FastAPI é que ele é um framework web baseado em funções. 
+Da mesma forma em que criamos funções tradicionalmente em python, podemos estender essas funções 
+para que elas sejam servidas pelo servidor. Por exemplo:
+em fast_zero/app.py
+def read_root():
+    return {'message': 'Olá Mundo!'}
+
+
+Essa função em python basicamente retorna um dicionário com uma chave chamada 'message' e 
+uma mensagem 'Olá Mundo!'. Se adicionarmos essa função em novo arquivo chamado app.py no 
+diretório fast_zero. Podemos fazer a chamada dela pelo terminal interativo (REPL):
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Dica: Como abrir o terminal interativo (REPL)
+Para abrir o terminal interativo com o seu código carregado, você deve chamar o Python no terminal usando -i:
+
+$ Execução no terminal!
+python -i <seu_arquivo.py>
+O interpretador do Python executa o código do arquivo e retorna o shell após executar tudo que está escrito no arquivo.
+Para o nosso caso específico, como o nome do arquivo é fast_zero/app.py, devemos executar esse comando no terminal:
+$ Execução no terminal!
+python -i fast_zero/app.py
+
+>>> Terminal interativo!
+
+>>> read_root()
+{'message': 'Olá Mundo!'}
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=>Desta forma, usando somente um decorador do FastAPI, podemos fazer 
+com que uma determinada função seja acessível pela rede:
+fast_zero/app.py
+from fastapi import FastAPI 
+
+app = FastAPI()  
+
+@app.get('/')  
+def read_root():  
+    return {'message': 'Olá Mundo!'}
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Agora com o ambiente virtual ativo, podemos iniciar nosso servidor FastAPI para iniciar nossa aplicação:
+
+$ Execução no terminal!
+
+fastapi dev fast_zero/app.py
+
+Esse comando diz ao FastAPI para iniciar o servidor de desenvolvimento (dev) usando o arquivo fast_zero/app.py
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Uvicorn
+O FastAPI é ótimo para criar APIs, mas não pode disponibilizá-las na rede sozinho. Embora o FastAPI tenha 
+uma aplicação de terminal que facilita a execução. Para podermos acessar essas APIs por um navegador ou de 
+outras aplicações clientes, é necessário um servidor. É aí que o Uvicorn entra em cena. Ele atua como esse 
+servidor, disponibilizando a API do FastAPI em rede. Isso permite que a API seja acessada de outros 
+dispositivos ou programas.
+
+Sempre que usarmos o fastapi para inicializar a aplicação no shell, ele faz uma chamada interna para 
+inicializar o uvicorn. Por esse motivo ele aparece nas respostas HTTP e também na execução do comando.
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Instalando as ferramentas de desenvolvimento
+As escolhas de ferramentas de desenvolvimento, de forma geral, são escolhas bem particulares. 
+Não costumam ser consensuais nem mesmo em times de desenvolvimento. Dito isso, selecionei algumas 
+ferramentas que gosto de usar e alinhadas com a utilidade que elas apresentam no desenvolvimento do projeto.
+
+As ferramentas escolhidas são:
+
+taskipy: ferramenta usada para criação de comandos. Como executar a aplicação, rodar os testes, etc.
+pytest: ferramenta para escrever e executar testes
+ruff: Uma ferramenta que tem duas funções no nosso código:
+Um analisador estático de código (um linter), para dizer se não estamos infringido alguma boa prática de programação;
+Um formatador de código. Para seguirmos um estilo único de código. Vamos nos basear na PEP-8.
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Para instalar essas ferramentas que usaremos em desenvolvimento, podemos usar um grupo (--group dev) do poetry 
+focado nelas, para não serem instaladas quando nossa aplicação estiver em produção:
+$ Execução no terminal!
+poetry add --group dev pytest pytest-cov taskipy ruff httpx
+
+O HTTPX foi incluído, pois ele é uma dependência do cliente de testes do FastAPI.
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Configurando as ferramentas de desenvolvimento
+Após a instalação das ferramentas de desenvolvimento, precisamos definir as configurações 
+de cada uma individualmente no arquivo pyproject.toml.
+
+=> Ruff
+O Ruff é uma ferramenta moderna em python, escrita em rust, compatível2 com os projetos de análise 
+estática escritos e mantidos originalmente pela comunidade no projeto PYCQA3 e tem duas funções principais:
+
+Analisar o código de forma estática (Linter): Efetuar a verificação se estamos programando de acordo com boas práticas do python.
+Formatar o código (Formatter): Efetuar a verificação do código para padronizar um estilo de código pré-definido.
+Para configurar o ruff montamos a configuração em 3 tabelas distintas no arquivo pyproject.toml. Uma para as 
+configurações globais, uma para o linter e uma para o formatador.
+
+Configuração global
+Na configuração global do Ruff queremos alterar somente duas coisas. O comprimento de linha para 79 caracteres 
+(conforme sugerido na PEP-8) e em seguida, informaremos que o diretório de migrações de banco de dados será 
+ignorado na checagem e na formatação:
+pyproject.toml
+
+[tool.ruff]
+line-length = 79
+extend-exclude = ['migrations']
+
+
+=> Linter
+
+Durante a análise estática do código, queremos buscar por coisas específicas. No Ruff, 
+precisamos dizer exatamente o que ele deve analisar. Isso é feito por códigos. Usaremos estes:
+
+I (Isort): Checagem de ordenação de imports em ordem alfabética
+F (Pyflakes): Procura por alguns erros em relação a boas práticas de código
+E (Erros pycodestyle): Erros de estilo de código
+W (Avisos pycodestyle): Avisos de coisas não recomendadas no estilo de código
+PL (Pylint): Como o F, também procura por erros em relação a boas práticas de código
+PT (flake8-pytest): Checagem de boas práticas do Pytest
+
+pyproject.toml
+
+[tool.ruff.lint]
+preview = true
+select = ['I', 'F', 'E', 'W', 'PL', 'PT']
+
+=> Formatter
+
+A formatação do Ruff praticamente não precisa ser alterada. Pois ele vai seguir as boas práticas e 
+usar a configuração global de 79 caracteres por linha. A única alteração que farei é o uso de aspas 
+simples ' no lugar de aspas duplas ":
+
+pyproject.toml
+
+[tool.ruff.format]
+preview = true
+quote-style = 'single'
+
+
+=> pytest
+O Pytest é uma framework de testes, que usaremos para escrever e executar nossos testes. 
+O configuraremos para reconhecer o caminho base para execução dos testes na raiz do projeto .:
+
+pyproject.toml
+
+[tool.pytest.ini_options]
+pythonpath = "."
+addopts = '-p no:warnings'
+
+Na segunda linha dizemos para o pytest adicionar a opção no:warnings. 
+Para ter uma visualização mais limpa dos testes, caso alguma biblioteca 
+exiba uma mensagem de warning, isso será suprimido pelo pytest.
+
+
+=> Taskipy
+A ideia do Taskipy é ser um executor de tarefas (task runner) complementar em nossa aplicação. 
+No lugar de ter que lembrar comandos como o do fastapi, que vimos na execução da aplicação, 
+que tal substituir ele simplesmente por task run?
+
+Isso funcionaria para qualquer comando complicado em nossa aplicação. Simplificando as chamadas e também para não termos que lembrar de como executar todos os comandos de cabeça.
+
+Alguns comandos que criaremos agora no início:
+
+pyproject.toml
+
+[tool.taskipy.tasks]
+lint = 'ruff check . && ruff check . --diff'
+format = 'ruff check . --fix && ruff format .'
+run = 'fastapi dev fast_zero/app.py'
+pre_test = 'task lint'
+test = 'pytest -s -x --cov=fast_zero -vv'
+post_test = 'coverage html'
+
+
+OBS: Os comandos definidos fazem o seguinte:
+
+lint: Executa duas variações da checagem:
+
+ruff check --diff: Mostra o que precisa ser alterado no código para que as boas práticas sejam seguidas
+ruff check: Mostra os códigos de infrações de boas práticas
+&&: O duplo & faz com que a segunda parte do comando só seja executada se a primeira não der erro. Sendo assim, 
+enquanto o --diff apresentar erros, ele não executará o check
+format: Executa duas variações da formatação:
+
+ruff check --fix: Faz algumas correções de boas práticas automaticamente
+ruff format: Executa a formatação do código em relação as convenções de estilo de código
+run: executa o servidor de desenvolvimento do FastAPI
+pre_test: executa a camada de lint antes de executar os testes
+test: executa os testes com pytest de forma verbosa (-vv) e adiciona nosso código como base de cobertura
+post_test: gera um report de cobertura após os testes
+Para executar um comando, é bem mais simples, precisando somente passar a 
+palavra task <comando>.
+
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Os efeitos dessas configurações de desenvolvimento
+Caso você tenha copiado o código que usamos para definir fast_zero/app.py, pode testar os comandos que criamos para o taskipy:
+
+$ Execução no terminal!
+
+task lint
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Para corrigir isso, podemos usar o nosso comando de formatação de código:
+$ Execução no terminal!
+
+task format
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Introdução ao Pytest: Testando o "Hello, World!"
+Antes de entendermos a dinâmica dos testes, precisamos entender o efeito que eles têm no nosso código. 
+Podemos começar analisando a cobertura (o quanto do nosso código está sendo efetivamente testado). 
+Vamos executar os testes:
+
+$ Execução no terminal!
+
+task test
+
+---------- coverage: platform linux, python 3.11.7-final-0 -----------
+Name                    Stmts   Miss  Cover
+-------------------------------------------
+fast_zero/__init__.py       0      0   100%
+fast_zero/app.py            5      5     0%
+-------------------------------------------
+TOTAL                       5      5     0%
+
+As linhas no terminal são referentes ao pytest, que disse que coletou 0 itens. Nenhum teste foi executado.
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> cobertura de testes em formato HTML.
+$ Execução no terminal!
+
+task post_test
+Wrote HTML report to htmlcov/index.html
+
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=>Escrevendo o teste
+Agora, escreveremos nosso primeiro teste com Pytest. Mas, antes de escrever o teste, precisamos criar um arquivo 
+específico para eles. Na pasta tests, vamos criar um arquivo chamado test_app.py.
+
+Por convenção, todos os arquivos de teste do pytest devem iniciar com um prefixo test_.py
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Para testar o código feito com FastAPI, precisamos de um cliente de teste. A grande vantagem é que o FastAPI 
+já conta com um cliente de testes no módulo fastapi.testclient com o objeto TestClient, que precisa receber 
+nosso app como parâmetro:
+
+tests/test_app.py
+
+from fastapi.testclient import TestClient  
+
+from fast_zero.app import app  
+
+client = TestClient(app)  
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=>Só o fato de termos definido um cliente, já nos mostra uma cobertura bastante diferente:
+
+$ Execução no terminal!
+
+task test
+
+Por não coletar nenhum teste, o pytest ainda retornou um "erro". Para ver a cobertura, precisaremos executar novamente o post_test manualmente:
+
+$ Execução no terminal!
+
+task post_test
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> No verde vemos o que foi executado quando chamamos o teste, no vermelho o que não foi.
+Para resolver isso, temos que criar um teste de fato, fazendo uma chamada para nossa API usando 
+o cliente de teste que definimos:
+
+tests/test_app.py
+
+from http import HTTPStatus  
+
+from fastapi.testclient import TestClient
+
+from fast_zero.app import app
+
+
+def test_root_deve_retornar_ok_e_ola_mundo():  
+    client = TestClient(app)  
+
+    response = client.get('/')  
+
+    assert response.status_code == HTTPStatus.OK  
+    assert response.json() == {'message': 'Olá Mundo!'}  
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Estrutura de um teste
+Agora que escrevemos nosso primeiro teste de forma intuitiva, podemos entender o que cada passo do teste faz. 
+Essa compreensão é vital, pois nos ajudará a escrever testes com mais confiança e eficácia. Para desvendar o 
+método por trás da nossa abordagem, exploraremos uma estratégia conhecida como AAA, 
+que divide o teste em três fases distintas: Arrange, Act, Assert.
+Arrange,   Act,  Assert.
+Organizar, agir, afirmar.
+
+def test_root_deve_retornar_ok_e_ola_mundo():
+    client = TestClient(app)  # Arrange
+
+    response = client.get('/')  # Act
+
+    assert response.status_code == HTTPStatus.OK  # Assert
+    assert response.json() == {'message': 'Olá Mundo!'}  # Assert
+
+Com base nesse código, podemos observar as três fases:
+
+Fase 1 - Organizar (Arrange)
+Nesta primeira etapa, estamos preparando o ambiente para o teste. No exemplo, a linha com o comentário 
+Arrange não é o teste em si, ela monta o ambiente para que o teste possa ser executado. Estamos configurando 
+um client de testes para fazer a requisição ao app.
+
+Fase 2 - Agir (Act)
+Aqui é a etapa onde acontece a ação principal do teste, que consiste em chamar o Sistema Sob Teste (SUT). 
+No nosso caso, o SUT é a rota /, e a ação é representada pela linha response = client.get('/'). Estamos exercitando 
+a rota e armazenando sua resposta na variável response. É a fase em que o código de testes executa o código de 
+produção que está sendo testado. Agir aqui significa interagir diretamente com a parte do sistema que queremos avaliar, 
+para ver como ela se comporta.
+
+Fase 3 - Afirmar (Assert)
+Esta é a etapa de verificar se tudo correu como esperado. É fácil notar onde estamos fazendo a verificação, pois essa 
+linha sempre tem a palavra reservada assert. A verificação é booleana, ou está correta, ou não está. Por isso, um teste 
+deve sempre incluir um assert para verificar se o comportamento esperado está correto.
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Criando nosso repositório no git
+Antes de concluirmos a aula, precisamos executar alguns passos:
+
+Criar um arquivo .gitignore para não adicionar o ambiente virtual e outros arquivos desnecessários no versionamento de código.
+Criar um novo repositório no GitHub para versionar o código.
+Subir o código que fizemos para o GitHub.
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Criando o arquivo .gitignore
+Vamos iniciar com a criação de um arquivo .gitignore específico para Python. Existem diversos modelos disponíveis na internet, 
+como os disponíveis pelo próprio GitHub, ou o gitignore.io. Uma ferramenta útil é a ignr, feita em Python, que faz o download 
+automático do arquivo para a nossa pasta de trabalho atual:
+
+$ Execução no terminal!
+
+ignr -p python > .gitignore
+
+
+OBS: O .gitignore é importante porque ele nos ajuda a evitar que arquivos desnecessários ou sensíveis sejam enviados para o 
+repositório. Isso inclui o ambiente virtual, arquivos de configuração pessoal, entre outros.
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=> Criando um repositório no github
+Agora, com nossos arquivos indesejados ignorados, podemos iniciar o versionamento de código usando o git. 
+Para criar um repositório local, usamos o comando git init .. Para criar esse repositório no GitHub, utilizaremos 
+o gh, um utilitário de linha de comando que nos auxilia nesse processo:
+
+$ Execução no terminal!
+
+git init .
+gh repo create
+
+
+
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=>
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=>
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=>
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=>
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=>
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=>
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=>
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=>
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=>
+<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
+=>
