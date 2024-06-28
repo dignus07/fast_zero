@@ -417,25 +417,24 @@ $ Execução no terminal!
 git init .
 gh repo create
 
+Ao executar gh repo create, algumas informações serão solicitadas, como o nome do repositório e se ele será público ou 
+privado. Isso irá criar um repositório tanto localmente quanto no GitHub.
 
 
 <|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
-=>
+=> Subindo nosso código para o github
+Com o repositório pronto, vamos versionar nosso código. Primeiro, adicionamos o código ao próximo commit com git add .. 
+Em seguida, criamos um ponto na história do projeto com git commit -m "Configuração inicial do projeto". Por fim, sincronizamos o 
+repositório local com o remoto no GitHub usando git push:
+
+$ Execução no terminal!
+
+git add .
+git commit -m "Configuração inicial do projeto"
+git push
+
 <|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
-=>
-<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
-=>
-<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
-=>
-<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
-=>
-<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
-=>
-<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
-=>
-<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
-=>
-<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
-=>
-<|-x-x-x-x-x-x-x-x-x-x-x-|aula01|-x-x-x-x-x-x-x-x-x-x-x-x-|>
-=>
+=> Conclusão
+Pronto! Agora temos um ambiente de desenvolvimento totalmente configurado para começar a trabalhar com FastAPI e já fizemos 
+nossa primeira imersão no Desenvolvimento Orientado por Testes. Na próxima aula nos aprofundaremos na estruturação da nossa 
+aplicação FastAPI. Até lá!
